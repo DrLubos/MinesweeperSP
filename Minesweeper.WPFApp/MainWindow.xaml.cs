@@ -54,6 +54,7 @@ namespace Minesweeper.WPFApp
         private void LoadGame(int rows, int cols, int mines)
         {
             MinesCounter.Text = mines.ToString();
+            MarkedMinesCounter.Text = "0";
             InitializeGameGrid(rows, cols);
             _minesweeperGame = new GameInstance(rows, cols, mines);
         }
@@ -102,12 +103,18 @@ namespace Minesweeper.WPFApp
             {
                 button.Content = "";
                 MinesCounter.Text = (int.Parse(MinesCounter.Text) + 1).ToString();
+                MarkedMinesCounter.Text = (int.Parse(MarkedMinesCounter.Text) - 1).ToString();
                 button.Background = Brushes.DarkGreen;
+                return;
+            }
+            if (MinesCounter.Text == "0")
+            {
                 return;
             }
             button.Content = "M";
             button.Background = Brushes.Red;
             MinesCounter.Text = (int.Parse(MinesCounter.Text) - 1).ToString();
+            MarkedMinesCounter.Text = (int.Parse(MarkedMinesCounter.Text) + 1).ToString();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
