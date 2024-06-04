@@ -86,6 +86,7 @@ namespace Minesweeper.WPFApp
                     button.IsEnabled = true;
                     button.Background = Brushes.DarkGreen;
                     button.FontSize = 20;
+                    button.FontWeight = FontWeights.Bold;
                     button.Content = "";
                     Grid.SetRow(button, row);
                     Grid.SetColumn(button, col);
@@ -101,6 +102,7 @@ namespace Minesweeper.WPFApp
             {
                 button.Content = "";
                 MinesCounter.Text = (int.Parse(MinesCounter.Text) + 1).ToString();
+                button.Background = Brushes.DarkGreen;
                 return;
             }
             button.Content = "M";
@@ -127,13 +129,11 @@ namespace Minesweeper.WPFApp
             }
             else
             {
-                button.Content = result.Item2 == 0 ? "" : result.Item2.ToString();
-                button.Background = Brushes.LightGray;
-                RevealNeighbours(position.Item1, position.Item2);
+                RevealTile(position.Item1, position.Item2);
             }
         }
 
-        private void RevealNeighbours(int row, int col)
+        private void RevealTile(int row, int col)
         {
             var result = _minesweeperGame.SelectedTile(row, col);
             if (result == null || result.Item1)
@@ -147,6 +147,7 @@ namespace Minesweeper.WPFApp
             }
             button.Content = result.Item2 == 0 ? "" : result.Item2.ToString();
             button.Background = Brushes.LightGray;
+            button.Foreground = GetColor(result.Item2);
             button.IsEnabled = false;
             if (result.Item2 == 0)
             {
@@ -158,7 +159,7 @@ namespace Minesweeper.WPFApp
                         int c = col + colChange;
                         if (r >= 0 && r < _minesweeperGame.Rows && c >= 0 && c < _minesweeperGame.Cols)
                         {
-                            RevealNeighbours(r, c);
+                            RevealTile(r, c);
                         }
                     }
                 }
@@ -176,6 +177,23 @@ namespace Minesweeper.WPFApp
                 }
             }
             return null;
+        }
+
+        private Brush GetColor(int number)
+        {
+            return number switch
+            {
+                1 => Brushes.Blue,
+                2 => Brushes.Green,
+                3 => Brushes.Red,
+                4 => Brushes.Purple,
+                5 => Brushes.Maroon,
+                6 => Brushes.Turquoise,
+                7 => Brushes.Sienna,
+                8 => Brushes.OrangeRed,
+                9 => Brushes.Pink,
+                _ => Brushes.Black
+            };
         }
     }
 }
