@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Minesweeper.WPFApp"
         mc:Ignorable="d"
-        Title="Select Difficulty" Height="250" Width="300">
+        Title="Select Difficulty" Height="250" Width="200" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -16,19 +16,19 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Margin="5" Text="Rows:"/>
-        <TextBox Grid.Row="1" Margin="5" Name="RowsTextBox"/>
-        <TextBlock Grid.Row="2" Margin="5" Text="Columns:"/>
-        <TextBox Grid.Row="3" Margin="5" Name="ColsTextBox"/>
-        <TextBlock Grid.Row="4" Margin="5" Text="Mines:"/>
-        <TextBox Grid.Row="5" Margin="5" Name="MinesTextBox"/>
+        <TextBlock Grid.Row="0" Margin="5, 5, 5, 2" Text="Rows:" FontSize="16"/>
+        <TextBox Grid.Row="1" Margin="5, 2, 5, 5" Name="RowsTextBox" FontSize="16"/>
+        <TextBlock Grid.Row="2" Margin="5,2,5,2" Text="Columns:" FontSize="16"/>
+        <TextBox Grid.Row="3" Margin="5,2,5,5" Name="ColsTextBox" FontSize="16"/>
+        <TextBlock Grid.Row="4" Margin="5,2,5,2" Text="Mines:" FontSize="16"/>
+        <TextBox Grid.Row="5" Margin="5,2,5,5" Name="MinesTextBox" FontSize="16"/>
         <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Margin="5" Click="Button_Click" Content="Apply"/>
-            <Button Grid.Column="1" Margin="5" Click="Cancel_Click" Content="Cancel"/>
+            <Button Margin="5" Click="Button_Click" Content="Apply" FontSize="16"/>
+            <Button Grid.Column="1" Margin="5" Click="Cancel_Click" Content="Cancel" FontSize="16"/>
         </Grid>
     </Grid>
 </Window>
