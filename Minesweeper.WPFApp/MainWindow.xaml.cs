@@ -60,6 +60,7 @@ namespace Minesweeper.WPFApp
             _minesweeperGame = new GameInstance(rows, cols, mines);
             _playingEnabled = true;
             _clickCounter = 0;
+            TryAgain.IsEnabled = false;
         }
 
         private void InitializeGameGrid(int rows, int cols)
@@ -167,11 +168,18 @@ namespace Minesweeper.WPFApp
                         b.Background = Brushes.Red;
                     }
                 }
+                TryAgain.IsEnabled = true;
                 MessageBox.Show("Game Over", "Game Over", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
                 RevealTile(position.Item1, position.Item2);
+                if (_clickCounter == _minesweeperGame.Rows * _minesweeperGame.Cols - _minesweeperGame.Mines)
+                {
+                    _playingEnabled = false;
+                    TryAgain.IsEnabled = true;
+                    MessageBox.Show("You Win", "You Win", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
         }
 
@@ -237,6 +245,11 @@ namespace Minesweeper.WPFApp
                 9 => Brushes.Pink,
                 _ => Brushes.Black
             };
+        }
+
+        private void TryAgain_Click(object sender, RoutedEventArgs e)
+        {
+            LoadGame(_minesweeperGame.Rows, _minesweeperGame.Cols, _minesweeperGame.Mines);
         }
     }
 }

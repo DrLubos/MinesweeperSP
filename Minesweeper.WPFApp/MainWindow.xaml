@@ -30,11 +30,13 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Margin="5" Text="Mines left:" HorizontalAlignment="Right"/>
             <TextBlock Grid.Column="1" Margin="5" Name="MinesCounter" HorizontalAlignment="Left"/>
-            <TextBlock Grid.Column="2" Margin="5" Text="Mines marked:" HorizontalAlignment="Right"/>
-            <TextBlock Grid.Column="3" Margin="5" Name="MarkedMinesCounter" HorizontalAlignment="Left"/>
+            <Button Grid.Column="2" Margin="5" Click="TryAgain_Click" Content="Try Again" IsEnabled="False" Name="TryAgain"/>
+            <TextBlock Grid.Column="3" Margin="5" Text="Mines marked:" HorizontalAlignment="Right"/>
+            <TextBlock Grid.Column="4" Margin="5" Name="MarkedMinesCounter" HorizontalAlignment="Left"/>
         </Grid>
 
         <Grid Grid.Row="2" Name="GameGrid" Margin="10">

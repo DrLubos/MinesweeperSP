@@ -55,5 +55,6 @@
 
         public int Rows => _rows;
         public int Cols => _cols;
+        public int Mines => _mines;
     }
 }
