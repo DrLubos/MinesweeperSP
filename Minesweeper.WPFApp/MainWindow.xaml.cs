@@ -180,7 +180,7 @@ namespace Minesweeper.WPFApp
                     }
                 }
                 GameFinished();
-                MessageBox.Show("Game Over", "Game Over", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, "Game Over", "Game Over", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
@@ -188,7 +188,7 @@ namespace Minesweeper.WPFApp
                 if (_clickCounter == _minesweeperGame.Rows * _minesweeperGame.Cols - _minesweeperGame.Mines)
                 {
                     GameFinished();
-                    MessageBox.Show("You Won", "You Won", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(this, "You Won", "You Won", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }
@@ -272,7 +272,7 @@ namespace Minesweeper.WPFApp
 
         private void InitializeTimer()
         {
-            _dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
+            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(1);
             _dispatcherTimer.Tick += DispatcherTimer_Tick;
         }
 
@@ -308,6 +308,33 @@ namespace Minesweeper.WPFApp
                 aboutWindow.Close();
             };
             aboutWindow.ShowDialog();
+        }
+
+        private void HowToPlay_Click(object sender, RoutedEventArgs e)
+        {
+            var howToPlayWindow = new Window
+            {
+                Title = "How to play",
+                Width = 370,
+                Height = 200,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this,
+                ResizeMode = ResizeMode.NoResize,
+                ShowInTaskbar = false
+            };
+            var stackPanel = new StackPanel();
+            var title = new TextBlock { Text = "How to play Minesweeper", Margin = new Thickness(10, 10, 0, 10), FontWeight = FontWeights.Bold, FontSize = 20 };
+            var text = new TextBlock { Text = "Left click to reveal a tile.\nRight click to mark a mine.\nTry to reveal all tiles without revealing a mine.", Margin = new Thickness(10, 0, 0, 0), FontSize = 16 };
+            var button = new Button { Content = "OK", HorizontalAlignment = HorizontalAlignment.Stretch, Margin = new Thickness(10), FontSize = 16 };
+            stackPanel.Children.Add(title);
+            stackPanel.Children.Add(text);
+            stackPanel.Children.Add(button);
+            howToPlayWindow.Content = stackPanel;
+            button.Click += (s, args) =>
+            {
+                howToPlayWindow.Close();
+            };
+            howToPlayWindow.ShowDialog();
         }
     }
 }
