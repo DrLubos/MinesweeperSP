@@ -127,9 +127,55 @@ namespace Minesweeper.WPFApp
             }
             else
             {
-                button.Content = result.Item2.ToString();
+                button.Content = result.Item2 == 0 ? "" : result.Item2.ToString();
                 button.Background = Brushes.LightGray;
+                RevealNeighbours(position.Item1, position.Item2);
             }
+        }
+
+        private void RevealNeighbours(int row, int col)
+        {
+            var result = _minesweeperGame.SelectedTile(row, col);
+            if (result == null || result.Item1)
+            {
+                return;
+            }
+            var button = GetButtonAt(row, col);
+            if (button == null || !button.IsEnabled)
+            {
+                return;
+            }
+            button.Content = result.Item2 == 0 ? "" : result.Item2.ToString();
+            button.Background = Brushes.LightGray;
+            button.IsEnabled = false;
+            if (result.Item2 == 0)
+            {
+                for (int rowChange = -1; rowChange <= 1; ++rowChange)
+                {
+                    for (int colChange = -1; colChange <= 1; ++colChange)
+                    {
+                        int r = row + rowChange;
+                        int c = col + colChange;
+                        if (r >= 0 && r < _minesweeperGame.Rows && c >= 0 && c < _minesweeperGame.Cols)
+                        {
+                            RevealNeighbours(r, c);
+                        }
+                    }
+                }
+            }
+        }
+
+        private Button? GetButtonAt(int row, int col)
+        {
+            foreach (Button button in GameGrid.Children)
+            {
+                Tuple<int, int> position = (Tuple<int, int>)button.Tag;
+                if (position.Item1 == row && position.Item2 == col)
+                {
+                    return button;
+                }
+            }
+            return null;
         }
     }
 }

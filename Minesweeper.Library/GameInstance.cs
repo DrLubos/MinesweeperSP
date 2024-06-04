@@ -52,5 +52,8 @@
             Tuple<bool, int> result = _board[row, col] == -1 ? new Tuple<bool, int>(true, -1) : new Tuple<bool, int>(false, _board[row, col]);
             return result;
         }
+
+        public int Rows => _rows;
+        public int Cols => _cols;
     }
 }

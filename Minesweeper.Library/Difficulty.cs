@@ -13,9 +13,9 @@
         {
             return difficulty switch
             {
-                GameDifficulty.Easy => 9,
-                GameDifficulty.Medium => 16,
-                GameDifficulty.Hard => 16,
+                GameDifficulty.Easy => 8,
+                GameDifficulty.Medium => 14,
+                GameDifficulty.Hard => 24,
                 _ => 16,
             };
         }
@@ -24,9 +24,9 @@
         {
             return difficulty switch
             {
-                GameDifficulty.Easy => 9,
-                GameDifficulty.Medium => 16,
-                GameDifficulty.Hard => 30,
+                GameDifficulty.Easy => 10,
+                GameDifficulty.Medium => 18,
+                GameDifficulty.Hard => 20,
                 _ => 16,
             };
         }
