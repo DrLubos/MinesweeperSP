@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Minesweeper.WPFApp"
         mc:Ignorable="d"
-        Title="CustomDifficultySelect" Height="300" Width="300">
+        Title="Select Difficulty" Height="250" Width="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -22,6 +22,13 @@
         <TextBox Grid.Row="3" Margin="5" Name="ColsTextBox"/>
         <TextBlock Grid.Row="4" Margin="5" Text="Mines:"/>
         <TextBox Grid.Row="5" Margin="5" Name="MinesTextBox"/>
-        <Button Grid.Row="6" Margin="5" Click="Button_Click" Content="Apply"/>
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Margin="5" Click="Button_Click" Content="Apply"/>
+            <Button Grid.Column="1" Margin="5" Click="Cancel_Click" Content="Cancel"/>
+        </Grid>
     </Grid>
 </Window>

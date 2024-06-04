@@ -16,12 +16,10 @@
 
         <Menu Grid.Row="0">
             <MenuItem Header="New Game">
-                <MenuItem Header="Difficulty">
-                    <MenuItem Header="Easy" Click="Easy_Click"/>
-                    <MenuItem Header="Medium" Click="Medium_Click"/>
-                    <MenuItem Header="Hard" Click="Hard_Click"/>
-                    <MenuItem Header="Custom" Click="Custom_Click"/>
-                </MenuItem>
+                <MenuItem Header="Easy" Click="Easy_Click"/>
+                <MenuItem Header="Medium" Click="Medium_Click"/>
+                <MenuItem Header="Hard" Click="Hard_Click"/>
+                <MenuItem Header="Custom" Click="Custom_Click"/>
             </MenuItem>
         </Menu>
         <Grid Grid.Row="1">

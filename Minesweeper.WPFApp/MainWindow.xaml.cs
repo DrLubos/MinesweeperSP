@@ -230,7 +230,7 @@ namespace Minesweeper.WPFApp
             return null;
         }
 
-        private Brush GetColor(int number)
+        private static SolidColorBrush GetColor(int number)
         {
             return number switch
             {

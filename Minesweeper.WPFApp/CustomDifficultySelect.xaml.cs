@@ -37,12 +37,27 @@ namespace Minesweeper.WPFApp
                 Rows = rows;
                 Cols = cols;
                 Mines = mines;
+                if (rows < 1 || cols < 1 || mines < 1)
+                {
+                    MessageBox.Show("All values must be greater than 0", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                if (mines >= rows * cols)
+                {
+                    MessageBox.Show("Number of mines must be less than the number of tiles", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
                 DialogResult = true;
             }
             else
             {
                 MessageBox.Show("Invalid input", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
         }
     }
 }
