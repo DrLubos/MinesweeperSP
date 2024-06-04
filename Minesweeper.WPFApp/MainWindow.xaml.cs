@@ -18,17 +18,18 @@ namespace Minesweeper.WPFApp
     public partial class MainWindow : Window
     {
         private GameInstance _minesweeperGame;
+        private bool _playingEnabled;
+        private int _clickCounter;
 
         public MainWindow()
         {
             InitializeComponent();
             Medium_Click(null, null);
             _minesweeperGame = new GameInstance(Difficulty.GetRows(GameDifficulty.Medium), Difficulty.GetCols(GameDifficulty.Medium), Difficulty.GetMines(GameDifficulty.Medium));
+            _playingEnabled = true;
+            _clickCounter = 0;
         }
 
-        private void NewGame_Click(object sender, RoutedEventArgs e)
-        {
-        }
         private void Easy_Click(object sender, RoutedEventArgs e)
         {
             LoadGame(Difficulty.GetRows(GameDifficulty.Easy), Difficulty.GetCols(GameDifficulty.Easy), Difficulty.GetMines(GameDifficulty.Easy));
@@ -57,6 +58,8 @@ namespace Minesweeper.WPFApp
             MarkedMinesCounter.Text = "0";
             InitializeGameGrid(rows, cols);
             _minesweeperGame = new GameInstance(rows, cols, mines);
+            _playingEnabled = true;
+            _clickCounter = 0;
         }
 
         private void InitializeGameGrid(int rows, int cols)
@@ -98,6 +101,10 @@ namespace Minesweeper.WPFApp
 
         private void Button_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
+            if (!_playingEnabled)
+            {
+                return;
+            }
             Button button = (Button)sender;
             if (button.Content.ToString() == "M")
             {
@@ -112,13 +119,17 @@ namespace Minesweeper.WPFApp
                 return;
             }
             button.Content = "M";
-            button.Background = Brushes.Red;
+            button.Background = Brushes.DarkRed;
             MinesCounter.Text = (int.Parse(MinesCounter.Text) - 1).ToString();
             MarkedMinesCounter.Text = (int.Parse(MarkedMinesCounter.Text) + 1).ToString();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (!_playingEnabled)
+            {
+                return;
+            }
             Button button = (Button)sender;
             if (button.Content.ToString() == "M")
             {
@@ -132,6 +143,30 @@ namespace Minesweeper.WPFApp
             }
             if (result.Item1)
             {
+                _playingEnabled = false;
+                foreach (Button b in GameGrid.Children)
+                {
+                    Tuple<int, int> pos = (Tuple<int, int>)b.Tag;
+                    var r = _minesweeperGame.SelectedTile(pos.Item1, pos.Item2);
+                    if (r == null)
+                    {
+                        continue;
+                    }
+                    if (b.Content.ToString() == "M" && r.Item1 == false)
+                    {
+                        b.Background = Brushes.Yellow;
+                    }
+
+                    if (b.Content.ToString() == "M" && r.Item1)
+                    {
+                        continue;
+                    }
+                    if (r.Item1)
+                    {
+                        b.Content = "X";
+                        b.Background = Brushes.Red;
+                    }
+                }
                 MessageBox.Show("Game Over", "Game Over", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
@@ -156,6 +191,7 @@ namespace Minesweeper.WPFApp
             button.Background = Brushes.LightGray;
             button.Foreground = GetColor(result.Item2);
             button.IsEnabled = false;
+            ++_clickCounter;
             if (result.Item2 == 0)
             {
                 for (int rowChange = -1; rowChange <= 1; ++rowChange)
