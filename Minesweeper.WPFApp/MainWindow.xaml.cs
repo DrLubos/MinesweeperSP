@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -8,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Minesweeper.Library;
 
 namespace Minesweeper.WPFApp
@@ -20,10 +22,13 @@ namespace Minesweeper.WPFApp
         private GameInstance _minesweeperGame;
         private bool _playingEnabled;
         private int _clickCounter;
+        private DispatcherTimer _dispatcherTimer = new();
+        private Stopwatch _stopwatch = new();
 
         public MainWindow()
         {
             InitializeComponent();
+            InitializeTimer();
             Medium_Click(null, null);
             _minesweeperGame = new GameInstance(Difficulty.GetRows(GameDifficulty.Medium), Difficulty.GetCols(GameDifficulty.Medium), Difficulty.GetMines(GameDifficulty.Medium));
             _playingEnabled = true;
@@ -61,6 +66,8 @@ namespace Minesweeper.WPFApp
             _playingEnabled = true;
             _clickCounter = 0;
             TryAgain.IsEnabled = false;
+            TimerTextBlock.Text = "Time: 00:00:00";
+            _stopwatch.Reset();
         }
 
         private void InitializeGameGrid(int rows, int cols)
@@ -131,6 +138,11 @@ namespace Minesweeper.WPFApp
             {
                 return;
             }
+            if (!_stopwatch.IsRunning)
+            {
+                _stopwatch.Start();
+                _dispatcherTimer.Start();
+            }
             Button button = (Button)sender;
             if (button.Content.ToString() == "M")
             {
@@ -144,7 +156,6 @@ namespace Minesweeper.WPFApp
             }
             if (result.Item1)
             {
-                _playingEnabled = false;
                 foreach (Button b in GameGrid.Children)
                 {
                     Tuple<int, int> pos = (Tuple<int, int>)b.Tag;
@@ -168,7 +179,7 @@ namespace Minesweeper.WPFApp
                         b.Background = Brushes.Red;
                     }
                 }
-                TryAgain.IsEnabled = true;
+                GameFinished();
                 MessageBox.Show("Game Over", "Game Over", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
@@ -176,8 +187,7 @@ namespace Minesweeper.WPFApp
                 RevealTile(position.Item1, position.Item2);
                 if (_clickCounter == _minesweeperGame.Rows * _minesweeperGame.Cols - _minesweeperGame.Mines)
                 {
-                    _playingEnabled = false;
-                    TryAgain.IsEnabled = true;
+                    GameFinished();
                     MessageBox.Show("You Win", "You Win", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
@@ -250,6 +260,54 @@ namespace Minesweeper.WPFApp
         private void TryAgain_Click(object sender, RoutedEventArgs e)
         {
             LoadGame(_minesweeperGame.Rows, _minesweeperGame.Cols, _minesweeperGame.Mines);
+        }
+
+        private void GameFinished()
+        {
+            _stopwatch.Stop();
+            _dispatcherTimer.Stop();
+            _playingEnabled = false;
+            TryAgain.IsEnabled = true;
+        }
+
+        private void InitializeTimer()
+        {
+            _dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
+            _dispatcherTimer.Tick += DispatcherTimer_Tick;
+        }
+
+        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            TimerTextBlock.Text = "Time: " + _stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
+        }
+
+        private void About_Click(object sender, RoutedEventArgs e)
+        {
+            var aboutWindow = new Window
+            {
+                Title = "About",
+                Width = 220,
+                Height = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this,
+                ResizeMode = ResizeMode.NoResize,
+                ShowInTaskbar = false
+            };
+            var stackPanel = new StackPanel();
+            var title = new TextBlock { Text = "Minesweeper Game", Margin = new Thickness(10, 10, 0, 10), FontWeight = FontWeights.Bold, FontSize = 16 };
+            var version = new TextBlock { Text = "Version 1.0", Margin = new Thickness(10, 0, 0, 0) };
+            var copyright = new TextBlock { Text = "Copyright (c) 2024 Ľuboš Dragan", Margin = new Thickness(10, 0, 0, 0) };
+            var button = new Button { Content = "OK", HorizontalAlignment = HorizontalAlignment.Stretch, Margin = new Thickness(10) };
+            stackPanel.Children.Add(title);
+            stackPanel.Children.Add(version);
+            stackPanel.Children.Add(copyright);
+            stackPanel.Children.Add(button);
+            aboutWindow.Content = stackPanel;
+            button.Click += (s, args) =>
+            {
+                aboutWindow.Close();
+            };
+            aboutWindow.ShowDialog();
         }
     }
 }
