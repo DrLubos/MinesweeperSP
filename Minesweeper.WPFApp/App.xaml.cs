@@ -1,13 +1,9 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
-
-namespace Minesweeper.WPFApp
+﻿namespace Minesweeper.WPFApp
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
     }
 

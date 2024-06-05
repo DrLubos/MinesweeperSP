@@ -44,7 +44,7 @@ public class CustomDifficultyPage : ContentPage
         {
             Text = "Cancel"
         };
-        cancel.Clicked += (object? sender, EventArgs e) => Navigation.PopAsync();
+        cancel.Clicked += (_, _) => Navigation.PopAsync();
         stackLayout.Children.Add(labelRow);
         stackLayout.Children.Add(_entryRow);
         stackLayout.Children.Add(labelCols);

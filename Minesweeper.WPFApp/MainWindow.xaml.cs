@@ -1,14 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using Minesweeper.Library;
 
@@ -17,7 +11,7 @@ namespace Minesweeper.WPFApp
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private GameInstance _minesweeperGame;
         private bool _playingEnabled;
@@ -156,39 +150,42 @@ namespace Minesweeper.WPFApp
             }
             if (result.Item1)
             {
-                foreach (Button b in GameGrid.Children)
-                {
-                    Tuple<int, int> pos = (Tuple<int, int>)b.Tag;
-                    var r = _minesweeperGame.SelectedTile(pos.Item1, pos.Item2);
-                    if (r == null)
-                    {
-                        continue;
-                    }
-                    if (b.Content.ToString() == "M" && r.Item1 == false)
-                    {
-                        b.Background = Brushes.Yellow;
-                    }
-
-                    if (b.Content.ToString() == "M" && r.Item1)
-                    {
-                        continue;
-                    }
-                    if (r.Item1)
-                    {
-                        b.Content = "X";
-                        b.Background = Brushes.Red;
-                    }
-                }
-                GameFinished();
-                MessageBox.Show(this, "Game Over", "Game Over", MessageBoxButton.OK, MessageBoxImage.Error);
+                RevealMines();
+                GameFinished(false);
             }
             else
             {
                 RevealTile(position.Item1, position.Item2);
                 if (_clickCounter == _minesweeperGame.Rows * _minesweeperGame.Cols - _minesweeperGame.Mines)
                 {
-                    GameFinished();
-                    MessageBox.Show(this, "You Won", "You Won", MessageBoxButton.OK, MessageBoxImage.Information);
+                    GameFinished(true);
+                }
+            }
+        }
+
+        private void RevealMines()
+        {
+            foreach (Button b in GameGrid.Children)
+            {
+                Tuple<int, int> pos = (Tuple<int, int>)b.Tag;
+                var r = _minesweeperGame.SelectedTile(pos.Item1, pos.Item2);
+                if (r == null)
+                {
+                    continue;
+                }
+                if (b.Content.ToString() == "M" && r.Item1 == false)
+                {
+                    b.Background = Brushes.Yellow;
+                }
+
+                if (b.Content.ToString() == "M" && r.Item1)
+                {
+                    continue;
+                }
+                if (r.Item1)
+                {
+                    b.Content = "X";
+                    b.Background = Brushes.Red;
                 }
             }
         }
@@ -262,12 +259,21 @@ namespace Minesweeper.WPFApp
             LoadGame(_minesweeperGame.Rows, _minesweeperGame.Cols, _minesweeperGame.Mines);
         }
 
-        private void GameFinished()
+        private void GameFinished(bool win)
         {
             _stopwatch.Stop();
             _dispatcherTimer.Stop();
             _playingEnabled = false;
             TryAgain.IsEnabled = true;
+            if (win)
+            {
+                MessageBox.Show(this, "You Won", "You Won", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show(this, "Game Over", "Game Over", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
         }
 
         private void InitializeTimer()
@@ -303,7 +309,7 @@ namespace Minesweeper.WPFApp
             stackPanel.Children.Add(copyright);
             stackPanel.Children.Add(button);
             aboutWindow.Content = stackPanel;
-            button.Click += (s, args) =>
+            button.Click += (_, _) =>
             {
                 aboutWindow.Close();
             };
@@ -316,7 +322,7 @@ namespace Minesweeper.WPFApp
             {
                 Title = "How to play",
                 Width = 370,
-                Height = 200,
+                Height = 235,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = this,
                 ResizeMode = ResizeMode.NoResize,
@@ -324,13 +330,13 @@ namespace Minesweeper.WPFApp
             };
             var stackPanel = new StackPanel();
             var title = new TextBlock { Text = "How to play Minesweeper", Margin = new Thickness(10, 10, 0, 10), FontWeight = FontWeights.Bold, FontSize = 20 };
-            var text = new TextBlock { Text = "Left click to reveal a tile.\nRight click to mark a mine.\nTry to reveal all tiles without revealing a mine.", Margin = new Thickness(10, 0, 0, 0), FontSize = 16 };
+            var text = new TextBlock { Text = "Left click to reveal a tile.\nRight click to mark a mine.\nNumber in tile represents how many mines\nis around the tile.\nTry to reveal all tiles without revealing a mine.", Margin = new Thickness(10, 0, 0, 0), FontSize = 16 };
             var button = new Button { Content = "OK", HorizontalAlignment = HorizontalAlignment.Stretch, Margin = new Thickness(10), FontSize = 16 };
             stackPanel.Children.Add(title);
             stackPanel.Children.Add(text);
             stackPanel.Children.Add(button);
             howToPlayWindow.Content = stackPanel;
-            button.Click += (s, args) =>
+            button.Click += (_, _) =>
             {
                 howToPlayWindow.Close();
             };

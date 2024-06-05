@@ -3,7 +3,7 @@ using Microsoft.Maui.Controls.Shapes;
 
 namespace Minesweeper.MAUIApp
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage
     {
         private GameInstance _gameInstance;
         private bool _playingEnabled;
