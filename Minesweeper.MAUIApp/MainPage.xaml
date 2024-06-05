@@ -1,13 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:effects="clr-namespace:Minesweeper.MAUIApp.Effects"
              x:Class="Minesweeper.MAUIApp.MainPage">
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="New Game">
             <MenuFlyoutItem Text="Easy" Clicked="Easy_Click"/>
             <MenuFlyoutItem Text="Medium" Clicked="Medium_Click"/>
             <MenuFlyoutItem Text="Hard" Clicked="Hard_Click"/>
+        </MenuBarItem>
+        <MenuBarItem Text="Help">
+            <MenuFlyoutItem Text="How To Play" Clicked="HowToPlay_Click"/>
+            <MenuFlyoutItem Text="About" Clicked="About_Click"/>
         </MenuBarItem>
     </ContentPage.MenuBarItems>
     <Grid>

@@ -331,6 +331,15 @@ namespace Minesweeper.MAUIApp
                 TimerTextBlock.Text = "Time: " + _timeSpan.ToString(@"hh\:mm\:ss");
             });
         }
+
+        private void About_Click(object sender, EventArgs e)
+        {
+            DisplayAlert("About", "Minesweeeper Game\nVersion 1.0\nCopyright (c) 2024 Ľuboš Dragan", "OK");
+        }
+        private void HowToPlay_Click(object sender, EventArgs e)
+        {
+            DisplayAlert("How to play Minesweeper", "Left click to reveal a tile.\nRight click to mark a mine.\nTry to reveal all tiles without revealing a mine.", "OK");
+        }
     }
 
 }
