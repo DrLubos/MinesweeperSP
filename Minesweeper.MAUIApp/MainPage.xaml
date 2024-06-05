@@ -7,6 +7,7 @@
             <MenuFlyoutItem Text="Easy" Clicked="Easy_Click"/>
             <MenuFlyoutItem Text="Medium" Clicked="Medium_Click"/>
             <MenuFlyoutItem Text="Hard" Clicked="Hard_Click"/>
+            <MenuFlyoutItem Text="Custom" Clicked="Custom_Click"/>
         </MenuBarItem>
         <MenuBarItem Text="Help">
             <MenuFlyoutItem Text="How To Play" Clicked="HowToPlay_Click"/>

@@ -338,7 +338,19 @@ namespace Minesweeper.MAUIApp
         }
         private void HowToPlay_Click(object sender, EventArgs e)
         {
-            DisplayAlert("How to play Minesweeper", "Left click to reveal a tile.\nRight click to mark a mine.\nTry to reveal all tiles without revealing a mine.", "OK");
+            DisplayAlert("How to play Minesweeper", "Left click to reveal a tile.\nRight click to mark a mine.\nNumber in tile represents how many mines is around the tile.\nTry to reveal all tiles without revealing a mine.", "OK");
+        }
+
+        private void Custom_Click(object sender, EventArgs e)
+        {
+            var difficultyPage = new CustomDifficultyPage();
+            difficultyPage.DifficultySelected += DifficultyPage_DifficultySelected;
+            Navigation.PushAsync(difficultyPage);
+        }
+
+        private void DifficultyPage_DifficultySelected(object? sender, CustomDifficultyEventArgs e)
+        {
+            LoadGame(e.Rows, e.Cols, e.Mines);
         }
     }
 

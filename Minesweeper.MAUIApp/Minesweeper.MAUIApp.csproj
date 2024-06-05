@@ -58,7 +58,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="EcoCore" Version="7.0.0.15699" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
@@ -66,6 +65,12 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Minesweeper.Library\Minesweeper.Library.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="CustomDifficultyPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>
