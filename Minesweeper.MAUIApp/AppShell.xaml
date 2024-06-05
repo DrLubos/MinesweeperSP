@@ -5,10 +5,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Minesweeper.MAUIApp"
     Shell.FlyoutBehavior="Disabled"
-    Title="Minesweeper.MAUIApp">
+    Title="Minesweeper">
 
     <ShellContent
-        Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
