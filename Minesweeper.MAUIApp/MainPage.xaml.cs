@@ -3,7 +3,6 @@ using Minesweeper.Library;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.Maui.Controls.Shapes;
-using Minesweeper.MAUIApp.Effects;
 
 namespace Minesweeper.MAUIApp
 {
@@ -14,8 +13,7 @@ namespace Minesweeper.MAUIApp
         private int _clickCounter;
         //private readonly DispatcherTimer _dispatcherTimer = new();
         private readonly Stopwatch _stopwatch = new();
-        private readonly HashSet<string> _visitedCells = new();
-
+        private readonly HashSet<string> _visitedCells = [];
         public MainPage()
         {
             InitializeComponent();
@@ -30,7 +28,7 @@ namespace Minesweeper.MAUIApp
             LoadGame(Difficulty.GetRows(GameDifficulty.Easy), Difficulty.GetCols(GameDifficulty.Easy), Difficulty.GetMines(GameDifficulty.Easy));
         }
 
-        private void Medium_Click(object sender, EventArgs e)
+        private void Medium_Click(object? sender, EventArgs? e)
         {
             LoadGame(Difficulty.GetRows(GameDifficulty.Medium), Difficulty.GetCols(GameDifficulty.Medium), Difficulty.GetMines(GameDifficulty.Medium));
         }
@@ -80,45 +78,41 @@ namespace Minesweeper.MAUIApp
                         CornerRadius = 0,
                         ClassId = $"{i},{j}",
                         Text = "",
-                        TextColor = Colors.Yellow,
+                        TextColor = Colors.Black,
                         FontSize = 20,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        VerticalOptions = LayoutOptions.FillAndExpand
                     };
-                    try
-                    {
-                        button.Clicked += Button_Clicked;
-                        var rightClickEffect = new RightClickEffect();
-                        rightClickEffect.RightClicked += (s, e) => OnRightClick(button);
-                        //button.Effects.Add(rightClickEffect);
-                        Grid.SetRow(button, i);
-                        Grid.SetColumn(button, j);
-                        GameGrid.Children.Add(button);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error: {ex.Message}");
-                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                    }
+                    button.Released += OnRightClick;
+                    button.Clicked += Button_Clicked;
+                    Grid.SetRow(button, i);
+                    Grid.SetColumn(button, j);
+                    GameGrid.Children.Add(button);
                 }
             }
         }
 
-        private void OnRightClick(Button button)
+        private void OnRightClick(object? sender, EventArgs? e)
         {
             if (!_playingEnabled)
             {
                 return;
             }
-
+            if (sender is not Button button)
+            {
+                return;
+            }
             if (button.Text == "M")
             {
                 button.Text = "";
                 button.BackgroundColor = Colors.DarkGreen;
+                MinesCounter.Text = (int.Parse(MinesCounter.Text) + 1).ToString();
                 MarkedMinesCounter.Text = (int.Parse(MarkedMinesCounter.Text) - 1).ToString();
             }
             else
             {
+                if (int.Parse(MinesCounter.Text) == 0)
+                {
+                    return;
+                }
                 button.Text = "M";
                 button.BackgroundColor = Colors.DarkRed;
                 MinesCounter.Text = (int.Parse(MinesCounter.Text) - 1).ToString();
@@ -126,10 +120,15 @@ namespace Minesweeper.MAUIApp
             }
         }
 
-        private void Button_Clicked(object sender, EventArgs e)
+        private void Button_Clicked(object? sender, EventArgs? e)
         {
             _visitedCells.Clear();
             if (!_playingEnabled)
+            {
+                return;
+            }
+            
+            if (sender is not Button)
             {
                 return;
             }
@@ -144,48 +143,53 @@ namespace Minesweeper.MAUIApp
             }
             if (result.Item1)
             {
-                foreach (var b in GameGrid.Children)
-                {
-                    if (!(b is Button btn))
-                    {
-                        continue;
-                    }
-                    var position = btn.ClassId.Split(',');
-                    var rowFor = int.Parse(position[0]);
-                    var colFor = int.Parse(position[1]);
-                    var r = _gameInstance.SelectedTile(rowFor, colFor);
-                    if (r == null)
-                    {
-                        continue;
-                    }
-                    if (btn.Text == "M" && r.Item1 == false)
-                    {
-                        btn.BackgroundColor = Colors.Yellow;
-                    }
-                    if (btn.Text == "M" && r.Item1)
-                    {
-                        continue;
-                    }
-                    if (r.Item1)
-                    {
-                        btn.Text = "X";
-                        btn.BackgroundColor = Colors.Red;
-                    }
-                    GameFinished();
-                    //MessageBox.Show(this, "Game Over", "Game Over", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                RevealMines();
+                GameFinished(false);
             }
             else
             {
                 RevealTile(row, col);
                 if (_clickCounter == _gameInstance.Rows * _gameInstance.Cols - _gameInstance.Mines)
                 {
-                    GameFinished();
-                    //MessageBox.Show(this, "You Won", "You Won", MessageBoxButton.OK, MessageBoxImage.Information);
+                    GameFinished(true);
                 }
             }
         }
 
+        private void RevealMines()
+        {
+            foreach (var b in GameGrid.Children)
+            {
+                if (b is not Button btn)
+                {
+                    continue;
+                }
+                var position = btn.ClassId.Split(',');
+                var rowFor = int.Parse(position[0]);
+                var colFor = int.Parse(position[1]);
+                var r = _gameInstance.SelectedTile(rowFor, colFor);
+                if (r == null)
+                {
+                    continue;
+                }
+
+                if (btn.Text == "M" && r.Item1 == false)
+                {
+                    btn.BackgroundColor = Colors.Yellow;
+                }
+
+                if (btn.Text == "M" && r.Item1)
+                {
+                    continue;
+                }
+
+                if (r.Item1)
+                {
+                    btn.Text = "X";
+                    btn.BackgroundColor = Colors.Red;
+                }
+            }
+        }
         private void RevealTile(int row, int col)
         {
             string cellId = $"{row},{col}";
@@ -204,8 +208,13 @@ namespace Minesweeper.MAUIApp
                 return;
             }
             _visitedCells.Add(cellId);
-            removeButton(button);
-            Border border = new Border
+            if (button.Text == "M")
+            {
+                MinesCounter.Text = (int.Parse(MinesCounter.Text) + 1).ToString();
+                MarkedMinesCounter.Text = (int.Parse(MarkedMinesCounter.Text) - 1).ToString();
+            }
+            RemoveButton(button);
+            Border border = new()
             {
                 Stroke = Colors.Black,
                 Margin = -1,
@@ -217,7 +226,7 @@ namespace Minesweeper.MAUIApp
                 Content = new Label
                 {
                     Text = result.Item2 == 0 ? "" : result.Item2.ToString(),
-                    TextColor = GetColor(result.Item2),
+                    TextColor = MainPage.GetColor(result.Item2),
                     FontSize = 25,
                     FontAttributes = FontAttributes.Bold,
                     HorizontalOptions = LayoutOptions.Center,
@@ -245,7 +254,7 @@ namespace Minesweeper.MAUIApp
             }
         }
 
-        private void removeButton(Button button)
+        private void RemoveButton(Button button)
         {
             button.Clicked -= Button_Clicked;
             if (GameGrid.Contains(button))
@@ -257,7 +266,7 @@ namespace Minesweeper.MAUIApp
         {
             foreach (var b in GameGrid.Children)
             {
-                if (!(b is Button button))
+                if (b is not Button button)
                 {
                     continue;
                 }
@@ -272,7 +281,7 @@ namespace Minesweeper.MAUIApp
             return null;
         }
 
-        private Color GetColor(int number)
+        private static Color GetColor(int number)
         {
             return number switch
             {
@@ -294,13 +303,22 @@ namespace Minesweeper.MAUIApp
             LoadGame(_gameInstance.Rows, _gameInstance.Cols, _gameInstance.Mines);
         }
 
-        private void GameFinished()
+        private void GameFinished(bool win)
         {
             //_stopwatch.Stop();
             //_dispatcherTimer.Stop();
             _playingEnabled = false;
             TryAgain.IsEnabled = true;
+            if (win)
+            {
+                DisplayAlert("You won", "You won!", "OK");
+            }
+            else
+            {
+                DisplayAlert("You lost", "You lost!", "OK");
+            }
         }
+
         private void InitializeTimer()
         {
             //_dispatcherTimer.Interval = TimeSpan.FromMilliseconds(1);
